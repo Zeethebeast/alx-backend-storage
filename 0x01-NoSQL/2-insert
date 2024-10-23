@@ -1,5 +1,5 @@
 #!/usr/bin/env mongo
-
+// this inserts new collection
 db.school.insertOne({
     "name": "Holberton school"
 })
