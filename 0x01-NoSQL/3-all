@@ -1,0 +1,3 @@
+#!/usr/bin/env mongo
+// lists the documents in my_db
+db.school.find()

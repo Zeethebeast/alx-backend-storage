@@ -1,0 +1,3 @@
+#!/usr/bin/env mongo
+// This lists the collection with name
+db.school.find({ name: "Holberton school" })

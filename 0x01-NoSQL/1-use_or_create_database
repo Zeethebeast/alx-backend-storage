@@ -1,0 +1,2 @@
+// This creates a new databse called my_db
+use my_db
