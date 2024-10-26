@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Module to fetch and cache HTML content of a URL with Redis.
+Module to fetch and cache HTML content of a URL with Redis, counting requests.
 """
 
 import requests
@@ -24,7 +24,15 @@ def count_requests(method: Callable) -> Callable:
 
 @count_requests
 def get_page(url: str) -> str:
-    """Fetch HTML content from a URL with caching for 10 seconds."""
+    """
+    Fetch HTML content from a URL with caching for 10 seconds.
+
+    Args:
+        url (str): The URL to fetch content from.
+
+    Returns:
+        str: The HTML content of the URL.
+    """
     cached_content = cache.get(f"cache:{url}")
     if cached_content:
         return cached_content.decode("utf-8")
