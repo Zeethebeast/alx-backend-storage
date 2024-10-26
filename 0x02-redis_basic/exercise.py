@@ -6,7 +6,8 @@ Module for a Cache class to interact with a Redis database.
 import redis
 import uuid
 from typing import Union, Callable, Optional
-
+from typing import Union, Callable, Optional
+from functools import wraps
 
 class Cache:
     """
@@ -83,3 +84,24 @@ class Cache:
             Optional[int]: The retrieved data as an integer, or None if the key does not exist.
         """
         return self.get(key, fn=int)
+    
+def count_calls(method: Callable) -> Callable:
+    """
+    A decorator that counts the number of times a method is called.
+
+    Args:
+        method (Callable): The method to be decorated.
+
+    Returns:
+        Callable: The decorated method with call counting functionality.
+    """
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        # Generate the key based on the method's qualified name
+        key = method.__qualname__
+        # Increment the call count in Redis
+        self._redis.incr(key)
+        # Call the original method and return its result
+        return method(self, *args, **kwargs)
+    
+    return wrapper
