@@ -9,6 +9,29 @@ from typing import Union, Callable, Optional
 from typing import Union, Callable, Optional
 from functools import wraps
 
+
+def count_calls(method: Callable) -> Callable:
+    """
+    A decorator that counts the number of times a method is called.
+
+    Args:
+        method (Callable): The method to be decorated.
+
+    Returns:
+        Callable: The decorated method with call counting functionality.
+    """
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        # Generate the key based on the method's qualified name
+        key = method.__qualname__
+        # Increment the call count in Redis
+        self._redis.incr(key)
+        # Call the original method and return its result
+        return method(self, *args, **kwargs)
+    
+    return wrapper
+
+
 class Cache:
     """
     A Cache class that provides methods to store data in a Redis database.
@@ -85,23 +108,4 @@ class Cache:
         """
         return self.get(key, fn=int)
     
-def count_calls(method: Callable) -> Callable:
-    """
-    A decorator that counts the number of times a method is called.
-
-    Args:
-        method (Callable): The method to be decorated.
-
-    Returns:
-        Callable: The decorated method with call counting functionality.
-    """
-    @wraps(method)
-    def wrapper(self, *args, **kwargs):
-        # Generate the key based on the method's qualified name
-        key = method.__qualname__
-        # Increment the call count in Redis
-        self._redis.incr(key)
-        # Call the original method and return its result
-        return method(self, *args, **kwargs)
     
-    return wrapper
